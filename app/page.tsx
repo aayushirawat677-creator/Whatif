@@ -118,40 +118,6 @@ export default function CrossroadsScene() {
                   alt={`Possibility ${p.id}`}
                   width={160}
                   height={200}
-                  style={{ width: '160px', height: 'auto' }}
-                />
-                <div
-                  className="absolute flex flex-col items-center justify-center"
-                  style={{
-                    top: '22%',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '80%',
-                    textAlign: 'center',
-                  }}
-                >
-                  <span style={{
-                    color: '#3B1A08',
-                    fontFamily: 'Georgia, serif',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    display: 'block',
-                    lineHeight: '1.2',
-                  }}>
-                    Possibility {p.id}
-                  </span>
-                  <span style={{
-                    color: '#5C2E0A',
-                    fontFamily: 'Georgia, serif',
-                    fontSize: '9px',
-                    fontStyle: 'italic',
-                    display: 'block',
-                    marginTop: '2px',
-                    lineHeight: '1.2',
-                  }}>
-                    {p.summary}
-                  </span>
-                </div>
                 <div
                   className="absolute left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-center"
                   style={{
