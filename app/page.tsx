@@ -36,6 +36,7 @@ export default function CrossroadsScene() {
   const [isLoading, setIsLoading]       = useState(false);
   const lookRef = useRef(0);
 
+  // Idle look animation
   useEffect(() => {
     if (gameState !== 'idle') return;
     const dirs: Array<'left' | 'right' | 'center'> = ['left', 'center', 'right', 'center', 'left', 'right'];
@@ -79,11 +80,13 @@ export default function CrossroadsScene() {
     setTimeout(() => setGameState('results'), 2400);
   };
 
+  const isFacingUs = gameState === 'typing' || gameState === 'thinking';
   const walkTarget = chosenRoad ? WALK_TARGETS[chosenRoad] : { x: 0, y: 0, scale: 1 };
 
   return (
     <main className="relative w-full h-screen overflow-hidden select-none">
 
+      {/* ── BACKGROUND ── */}
       <Image
         src="/background.png"
         alt="Dusty Texas crossroads at golden hour"
@@ -92,12 +95,15 @@ export default function CrossroadsScene() {
         priority
       />
 
+      {/* Subtle vignette */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.35) 100%)' }}
+        style={{
+          background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.35) 100%)',
+        }}
       />
 
-      {/* SIGNPOSTS */}
+      {/* ── SIGNPOSTS (appear after results) ── */}
       <AnimatePresence>
         {gameState === 'results' && possibilities.map((p) => {
           const pos = SIGNPOST_POSITIONS[p.road];
@@ -117,11 +123,14 @@ export default function CrossroadsScene() {
                   src="/signpost.png"
                   alt={`Possibility ${p.id}`}
                   width={160}
-                  height={200}
+                  height={130}
+                  style={{ width: '160px', height: 'auto' }}
+                />
+                
+                {/* Tap hint */}
                 <div
-                  className="absolute left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-center"
+                  className="absolute bottom-8 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-center"
                   style={{
-                    bottom: '30px',
                     background: 'rgba(254,243,199,0.85)',
                     fontSize: '8px',
                     color: '#B45309',
@@ -137,7 +146,7 @@ export default function CrossroadsScene() {
         })}
       </AnimatePresence>
 
-      {/* BLUR OVERLAY */}
+      {/* ── BLUR OVERLAY when typing ── */}
       <AnimatePresence>
         {(gameState === 'typing' || gameState === 'thinking') && (
           <motion.div
@@ -145,18 +154,13 @@ export default function CrossroadsScene() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              zIndex: 35,
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              background: 'rgba(0,0,0,0.25)',
-            }}
+            className="absolute inset-0 z-35 pointer-events-none"
+            style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', background: 'rgba(0,0,0,0.25)' }}
           />
         )}
       </AnimatePresence>
 
-      {/* CHARACTER TYPING VIDEO */}
+      {/* ── CHARACTER TYPING VIDEO — plays when user is typing ── */}
       <AnimatePresence>
         {(gameState === 'typing' || gameState === 'thinking') && (
           <motion.div
@@ -177,6 +181,7 @@ export default function CrossroadsScene() {
               overflow: 'hidden',
             }}
           >
+            {/* Light opacity box around animation */}
             <div style={{
               position: 'absolute',
               bottom: 0,
@@ -188,6 +193,7 @@ export default function CrossroadsScene() {
               borderRadius: '24px',
               zIndex: 0,
             }} />
+            {/* Thought bubble */}
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -208,8 +214,10 @@ export default function CrossroadsScene() {
                 position: 'relative',
               }}
             >
-              {gameState === 'thinking' ? '✦ reading the roads...' : "✦ I'm listening..."}
+              {gameState === 'thinking' ? '✦ reading the roads...' : '✦ I\'m listening...'}
             </motion.div>
+
+            {/* Typing video */}
             <video
               autoPlay
               loop
@@ -232,14 +240,14 @@ export default function CrossroadsScene() {
         )}
       </AnimatePresence>
 
-      {/* CHARACTER AT CROSSROADS */}
+      {/* ── CHARACTER AT CROSSROADS ── */}
       <motion.div
         className="absolute z-30 cursor-pointer"
         style={{
           bottom: '18%',
           left: '50%',
           translateX: '-50%',
-          width: '200px',
+          width: "200px",
           isolation: 'isolate',
         }}
         animate={
@@ -253,6 +261,7 @@ export default function CrossroadsScene() {
         onClick={handleAvatarClick}
         title="Click to share your question"
       >
+        {/* Thinking bubble — idle */}
         <AnimatePresence>
           {gameState === 'idle' && (
             <motion.div
@@ -285,6 +294,7 @@ export default function CrossroadsScene() {
           )}
         </AnimatePresence>
 
+        {/* Character idle video */}
         <div>
           <video
             autoPlay
@@ -312,7 +322,7 @@ export default function CrossroadsScene() {
         </div>
       </motion.div>
 
-      {/* INPUT PANEL */}
+      {/* ── INPUT PANEL — bottom center, floating above blur ── */}
       <AnimatePresence>
         {gameState === 'typing' && (
           <motion.div
@@ -329,7 +339,10 @@ export default function CrossroadsScene() {
               maxWidth: '50vw',
             }}
           >
-            <p className="text-center mb-2 italic" style={{ color: '#78350F', fontFamily: 'Georgia, serif', fontSize: '13px' }}>
+            <p
+              className="text-center mb-2 italic"
+              style={{ color: '#78350F', fontFamily: 'Georgia, serif', fontSize: '13px' }}
+            >
               What decision are you standing at?
             </p>
             <textarea
@@ -337,7 +350,10 @@ export default function CrossroadsScene() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmit(); }
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit();
+                }
               }}
               placeholder="Should I quit my job to start a company?"
               rows={3}
@@ -387,7 +403,7 @@ export default function CrossroadsScene() {
         )}
       </AnimatePresence>
 
-      {/* THINKING STATE */}
+      {/* ── THINKING STATE ── */}
       <AnimatePresence>
         {gameState === 'thinking' && (
           <motion.div
@@ -396,8 +412,18 @@ export default function CrossroadsScene() {
             exit={{ opacity: 0 }}
             className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40"
           >
-            <div className="px-6 py-3 rounded-full" style={{ background: 'rgba(254,243,199,0.97)', border: '2px solid #B45309', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
-              <p className="text-sm italic" style={{ color: '#451A03', fontFamily: 'Georgia, serif' }}>
+            <div
+              className="px-6 py-3 rounded-full"
+              style={{
+                background: 'rgba(254,243,199,0.97)',
+                border: '2px solid #B45309',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+              }}
+            >
+              <p
+                className="text-sm italic"
+                style={{ color: '#451A03', fontFamily: 'Georgia, serif' }}
+              >
                 ✦ The roads are revealing themselves...
               </p>
             </div>
@@ -405,7 +431,7 @@ export default function CrossroadsScene() {
         )}
       </AnimatePresence>
 
-      {/* RESULTS HINT */}
+      {/* ── RESULTS HINT ── */}
       <AnimatePresence>
         {gameState === 'results' && (
           <motion.div
@@ -414,13 +440,26 @@ export default function CrossroadsScene() {
             exit={{ opacity: 0 }}
             className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 text-center"
           >
-            <p className="text-xs mb-2 italic" style={{ color: '#FEF3C7', fontFamily: 'Georgia, serif', textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
+            <p
+              className="text-xs mb-2 italic"
+              style={{
+                color: '#FEF3C7',
+                fontFamily: 'Georgia, serif',
+                textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+              }}
+            >
               Tap the signposts to explore each path
             </p>
             <button
               onClick={() => { setGameState('typing'); setChosenRoad(null); }}
               className="px-5 py-2 rounded-full text-xs"
-              style={{ background: 'rgba(254,243,199,0.92)', border: '1.5px solid #B45309', color: '#B45309', fontFamily: 'Georgia, serif', cursor: 'pointer' }}
+              style={{
+                background: 'rgba(254,243,199,0.92)',
+                border: '1.5px solid #B45309',
+                color: '#B45309',
+                fontFamily: 'Georgia, serif',
+                cursor: 'pointer',
+              }}
             >
               Ask a different question
             </button>
@@ -428,7 +467,7 @@ export default function CrossroadsScene() {
         )}
       </AnimatePresence>
 
-      {/* EXPANDED CARD */}
+      {/* ── EXPANDED CARD OVERLAY ── */}
       <AnimatePresence>
         {expandedCard !== null && (
           <motion.div
@@ -444,16 +483,26 @@ export default function CrossroadsScene() {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.85, y: 20 }}
               className="rounded-2xl p-6 max-w-md w-full"
-              style={{ background: '#FEF3C7', border: '2px solid #B45309', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}
+              style={{
+                background: '#FEF3C7',
+                border: '2px solid #B45309',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-2 mb-4">
-                <Image src="/signpost.png" alt="" width={40} height={52} style={{ width: '40px', height: 'auto' }} />
-                <h3 className="text-xl font-bold" style={{ color: '#451A03', fontFamily: 'Georgia, serif' }}>
+                <Image src="/signpost.png" alt="" width={40} height={33} style={{ mixBlendMode: 'multiply' }} />
+                <h3
+                  className="text-xl font-bold"
+                  style={{ color: '#451A03', fontFamily: 'Georgia, serif' }}
+                >
                   Possibility {expandedCard}
                 </h3>
               </div>
-              <p className="text-sm leading-relaxed mb-5" style={{ color: '#78350F', fontFamily: 'Georgia, serif', lineHeight: 1.7 }}>
+              <p
+                className="text-sm leading-relaxed mb-5"
+                style={{ color: '#78350F', fontFamily: 'Georgia, serif', lineHeight: 1.7 }}
+              >
                 {possibilities.find((p) => p.id === expandedCard)?.detail}
               </p>
               <div className="flex gap-3">
@@ -463,14 +512,26 @@ export default function CrossroadsScene() {
                     if (road) handleChooseRoad(road);
                   }}
                   className="flex-1 py-2.5 rounded-full text-sm font-medium"
-                  style={{ background: '#B45309', color: '#FEF3C7', fontFamily: 'Georgia, serif', border: 'none', cursor: 'pointer' }}
+                  style={{
+                    background: '#B45309',
+                    color: '#FEF3C7',
+                    fontFamily: 'Georgia, serif',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
                 >
                   Walk this road →
                 </button>
                 <button
                   onClick={() => setExpandedCard(null)}
                   className="flex-1 py-2.5 rounded-full text-sm"
-                  style={{ background: 'transparent', color: '#B45309', fontFamily: 'Georgia, serif', border: '1.5px solid #B45309', cursor: 'pointer' }}
+                  style={{
+                    background: 'transparent',
+                    color: '#B45309',
+                    fontFamily: 'Georgia, serif',
+                    border: '1.5px solid #B45309',
+                    cursor: 'pointer',
+                  }}
                 >
                   Keep reading
                 </button>
@@ -480,7 +541,7 @@ export default function CrossroadsScene() {
         )}
       </AnimatePresence>
 
-      {/* IDLE HINT */}
+      {/* ── IDLE HINT ── */}
       <AnimatePresence>
         {gameState === 'idle' && (
           <motion.div
@@ -490,7 +551,14 @@ export default function CrossroadsScene() {
             transition={{ delay: 1.5 }}
             className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-center"
           >
-            <p className="text-sm italic" style={{ color: '#FEF3C7', fontFamily: 'Georgia, serif', textShadow: '0 1px 6px rgba(0,0,0,0.6)' }}>
+            <p
+              className="text-sm italic"
+              style={{
+                color: '#FEF3C7',
+                fontFamily: 'Georgia, serif',
+                textShadow: '0 1px 6px rgba(0,0,0,0.6)',
+              }}
+            >
               tap the traveller to begin
             </p>
           </motion.div>
