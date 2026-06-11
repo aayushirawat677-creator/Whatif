@@ -491,7 +491,7 @@ export default function CrossroadsScene() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-2 mb-4">
-                <Image src="/signpost.png" alt="" width={40} height={33} style={{ mixBlendMode: 'multiply' }} />
+                <Image src="/signpost.png" alt="" width={40} height={33} style={{ width: '160px', height: 'auto' }} />
                 <h3
                   className="text-xl font-bold"
                   style={{ color: '#451A03', fontFamily: 'Georgia, serif' }}
