@@ -15,7 +15,7 @@ Unlike advice tools, What If never tells you what to do. It shows you **what cou
 
 ## Demo
 
-**Try it:** [localhost:3000] *(deploy link here)*
+**Try it:** [localhost:3000] https://whatif-pearl.vercel.app/
 
 **Example queries:**
 - `Should I take this 3rd floor flat without a lift?`
