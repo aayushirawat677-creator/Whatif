@@ -7,8 +7,9 @@
 
 ## Live Demo
 
-**App:** https://whatif-pearl.vercel.app/
+**App:** https://whatif-8ly5.vercel.app/
 **Repo:** https://github.com/aayushirawat677-creator/Whatif
+**LinkedIn** https://www.linkedin.com/in/aayushi-23a570a0/
 
 **Try these:**
 - `Should I quit my job to start a company?`
@@ -240,6 +241,6 @@ Open `http://localhost:3000`
 
 ## Team
 
-Built by **Aayushi Rawat** for Microsoft Agents League Hackathon 2026
+Built by **Aayushi Lnu** for Microsoft Agents League Hackathon 2026
 
 *"Synthesis can be delegated to AI. Judgment cannot."*
